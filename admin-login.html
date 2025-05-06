@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FilmyBazarBD - Admin Login</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Roboto', sans-serif;
+        }
+
+        body {
+            background-color: #0f0f0f;
+            color: #ffffff;
+            transition: background-color 0.3s ease, color 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* Light Theme */
+        body.light-theme {
+            background-color: #f5f5f5;
+            color: #333333;
+        }
+
+        .light-theme header, .light-theme .login-section, .light-theme footer {
+            background-color: #ffffff;
+            border-color: #e63946;
+        }
+
+        .light-theme .login-form input {
+            background-color: #f0f0f0;
+            color: #333333;
+            border-color: #e63946;
+        }
+
+        .light-theme .login-form input::placeholder {
+            color: #666666;
+        }
+
+        .light-theme .submit-btn {
+            background-color: #e63946;
+        }
+
+        .light-theme .login-form label,
+        .light-theme footer p {
+            color: #333333;
+        }
+
+        /* Header */
+        header {
+            background-color: #1c2526;
+            padding: 20px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid #e63946;
+            transition: background-color 0.3s ease;
+        }
+
+        .logo h1 {
+            font-size: 2em;
+            font-weight: 700;
+            color: #e63946;
+        }
+
+        .logo p {
+            font-size: 0.9em;
+            color: #a8a8a8;
+            margin-top: 5px;
+        }
+
+        .theme-toggle {
+            display: flex;
+            align-items: center;
+        }
+
+        .theme-toggle input {
+            display: none;
+        }
+
+        .theme-toggle label {
+            cursor: pointer;
+            padding: 8px;
+            font-size: 1.2em;
+            color: #a8a8a8;
+            transition: color 0.3s ease;
+        }
+
+        .theme-toggle input:checked + label {
+            color: #e63946;
+        }
+
+        /* Login Section */
+        .login-section {
+            padding: 40px;
+            max-width: 400px;
+            margin: 20px auto;
+            background-color: #1c2526;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+            transition: background-color 0.3s ease;
+            flex-grow: 1;
+        }
+
+        .login-section h2 {
+            font-size: 1.8em;
+            color: #e63946;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .login-form {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .form-group label {
+            font-size: 1em;
+            color: #ffffff;
+            font-weight: 400;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #2a2f30;
+            border-radius: 5px;
+            background-color: #2a2f30;
+            color: #ffffff;
+            font-size: 1em;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #e63946;
+            box-shadow: 0 0 8px rgba(230, 57, 70, 0.5);
+        }
+
+        .form-group input::placeholder {
+            color: #a8a8a8;
+        }
+
+        .submit-btn {
+            padding: 12px 20px;
+            background-color: #e63946;
+            color: #ffffff;
+            border: none;
+            border-radius: 5px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+            align-self: center;
+        }
+
+        .submit-btn:hover {
+            background-color: #d00000;
+            transform: scale(1.05);
+        }
+
+        /* Footer */
+        footer {
+            background-color: #1c2526;
+            text-align: center;
+            padding: 15px;
+            border-top: 1px solid #2a2f30;
+            transition: background-color 0.3s ease;
+        }
+
+        footer p {
+            font-size: 0.8em;
+            color: #a8a8a8;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            header {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .theme-toggle {
+                margin-top: 10px;
+            }
+
+            .login-section {
+                padding: 20px;
+                max-width: 90%;
+            }
+
+            .login-section h2 {
+                font-size: 1.5em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="logo">
+            <h1>FilmyBazarBD</h1>
+            <p>নতুন মুভির হাট, ২৪ ঘণ্টা জমজমাট!</p>
+        </div>
+        <div class="theme-toggle">
+            <input type="checkbox" id="theme-toggle">
+            <label for="theme-toggle">🌙</label>
+        </div>
+    </header>
+
+    <!-- Login Section -->
+    <section class="login-section">
+        <h2>Admin Login</h2>
+        <form class="login-form" action="/admin-login" method="POST">
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" placeholder="Enter your email" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" placeholder="Enter your password" required>
+            </div>
+            <button type="submit" class="submit-btn">Login</button>
+        </form>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <p>© 2025 FilmyBazarBD. All rights reserved.</p>
+    </footer>
+
+    <!-- Scripts -->
+    <script>
+        // Theme Toggle
+        const themeToggle = document.getElementById('theme-toggle');
+        themeToggle.addEventListener('change', () => {
+            document.body.classList.toggle('light-theme');
+        });
+    </script>
+</body>
+</html>
