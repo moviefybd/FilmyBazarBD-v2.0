@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FilmyBazarBD - Login</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Roboto', sans-serif;
+        }
+
+        body {
+            background-color: #0f0f0f;
+            color: #ffffff;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        /* Light Theme */
+        body.light-theme {
+            background-color: #f5f5f5;
+            color: #333333;
+        }
+
+        .light-theme header, .light-theme nav, .light-theme .login-form, .light-theme footer {
+            background-color: #ffffff;
+            border-color: #e63946;
+        }
+
+        .light-theme .login-form input {
+            background-color: #f0f0f0;
+            color: #333333;
+            border-color: #e63946;
+        }
+
+        .light-theme .login-form input::placeholder {
+            color: #666666;
+        }
+
+        .light-theme .submit-btn, .light-theme .google-btn {
+            background-color: #e63946;
+        }
+
+        .light-theme .login-form label,
+        .light-theme .or-divider span,
+        .light-theme .signup-link a,
+        .light-theme footer p {
+            color: #333333;
+        }
+
+        /* Header */
+        header {
+            background-color: #1c2526;
+            padding: 20px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid #e63946;
+            transition: background-color 0.3s ease;
+        }
+
+        .logo h1 {
+            font-size: 2em;
+            font-weight: 700;
+            color: #e63946;
+        }
+
+        .logo p {
+            font-size: 0.9em;
+            color: #a8a8a8;
+            margin-top: 5px;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .auth-buttons a, .admin-btn {
+            color: #ffffff;
+            text-decoration: none;
+            padding: 8px 16px;
+            border: 1px solid #e63946;
+            border-radius: 5px;
+            font-size: 0.9em;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .admin-btn {
+            border-color: #2a9d8f;
+        }
+
+        .auth-buttons a:hover, .admin-btn:hover {
+            background-color: #e63946;
+            color: #ffffff;
+        }
+
+        .admin-btn:hover {
+            background-color: #2a9d8f;
+        }
+
+        .theme-toggle {
+            display: flex;
+            align-items: center;
+        }
+
+        .theme-toggle input {
+            display: none;
+        }
+
+        .theme-toggle label {
+            cursor: pointer;
+            padding: 8px;
+            font-size: 1.2em;
+            color: #a8a8a8;
+            transition: color 0.3s ease;
+        }
+
+        .theme-toggle input:checked + label {
+            color: #e63946;
+        }
+
+        /* Navigation */
+        nav {
+            background-color: #1c2526;
+            padding: 10px 40px;
+            display: flex;
+            justify-content: center;
+            border-bottom: 1px solid #2a2f30;
+            transition: background-color 0.3s ease;
+        }
+
+        nav a {
+            color: #a8a8a8;
+            text-decoration: none;
+            margin: 0 15px;
+            font-size: 0.9em;
+            font-weight: 400;
+            transition: color 0.3s ease, transform 0.3s ease;
+        }
+
+        nav a:hover {
+            color: #e63946;
+            transform: translateY(-2px);
+        }
+
+        /* Login Section */
+        .login-section {
+            padding: 40px;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .login-section h2 {
+            font-size: 1.8em;
+            color: #e63946;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .login-form {
+            background-color: #1c2526;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+            transition: background-color 0.3s ease;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 1em;
+            color: #ffffff;
+            margin-bottom: 8px;
+            font-weight: 400;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #2a2f30;
+            border-radius: 5px;
+            background-color: #2a2f30;
+            color: #ffffff;
+            font-size: 1em;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #e63946;
+            box-shadow: 0 0 8px rgba(230, 57, 70, 0.5);
+        }
+
+        .form-group input::placeholder {
+            color: #a8a8a8;
+        }
+
+        .submit-btn {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            background-color: #e63946;
+            color: #ffffff;
+            border: none;
+            border-radius: 5px;
+            font-size: 1em;
+            font-weight: 400;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+            text-align: center;
+            margin-bottom: 15px;
+        }
+
+        .submit-btn:hover {
+            background-color: #d00000;
+            transform: scale(1.05);
+        }
+
+        .or-divider {
+            text-align: center;
+            margin: 20px 0;
+            position: relative;
+        }
+
+        .or-divider span {
+            color: #a8a8a8;
+            font-size: 0.9em;
+            background-color: #1c2526;
+            padding: 0 10px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .or-divider::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            width: 100%;
+            height: 1px;
+            background-color: #2a2f30;
+            z-index: 0;
+        }
+
+        .google-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            padding: 12px;
+            background-color: #e63946;
+            color: #ffffff;
+            border: none;
+            border-radius: 5px;
+            font-size: 1em;
+            font-weight: 400;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+            text-decoration: none;
+        }
+
+        .google-btn:hover {
+            background-color: #d00000;
+            transform: scale(1.05);
+        }
+
+        .google-btn::before {
+            content: 'G';
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            margin-right: 10px;
+            font-weight: 700;
+            text-align: center;
+            line-height: 20px;
+        }
+
+        .signup-link {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .signup-link a {
+            color: #e63946;
+            text-decoration: none;
+            font-size: 0.9em;
+            transition: color 0.3s ease;
+        }
+
+        .signup-link a:hover {
+            color: #d00000;
+        }
+
+        /* Footer */
+        footer {
+            background-color: #1c2526;
+            text-align: center;
+            padding: 15px;
+            border-top: 1px solid #2a2f30;
+            transition: background-color 0.3s ease;
+            margin-top: 40px;
+        }
+
+        footer p {
+            font-size: 0.8em;
+            color: #a8a8a8;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            header {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .header-right {
+                margin-top: 10px;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .auth-buttons a, .admin-btn {
+                padding: 6px 12px;
+                font-size: 0.8em;
+            }
+
+            nav {
+                padding: 10px 20px;
+            }
+
+            nav a {
+                margin: 0 10px;
+                font-size: 0.8em;
+            }
+
+            .login-section {
+                padding: 20px;
+            }
+
+            .login-form {
+                padding: 20px;
+            }
+
+            .login-section h2 {
+                font-size: 1.5em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="logo">
+            <h1>FilmyBazarBD</h1>
+            <p>নতুন মুভির হাট, ২৪ ঘণ্টা জমজমাট!</p>
+        </div>
+        <div class="header-right">
+            <div class="auth-buttons">
+                <a href="#">Login</a>
+                <a href="signup.html">Sign Up</a>
+                <a href="admin-login.html" class="admin-btn">Admin</a>
+            </div>
+            <div class="theme-toggle">
+                <input type="checkbox" id="theme-toggle">
+                <label for="theme-toggle">🌙</label>
+            </div>
+        </div>
+    </header>
+
+    <!-- Navigation -->
+    <nav>
+        <a href="#home">Home</a>
+        <a href="#request-movie">Request Movie</a>
+        <a href="#social-media">Social Media</a>
+        <a href="#contact">Contact Us</a>
+    </nav>
+
+    <!-- Login Section -->
+    <section class="login-section">
+        <h2>Login to Your Account</h2>
+        <form class="login-form">
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" placeholder="Enter your email" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" placeholder="Enter your password" required>
+            </div>
+            <button type="submit" class="submit-btn">Login</button>
+            <div class="or-divider">
+                <span>OR</span>
+            </div>
+            <a href="#" class="google-btn">Login with Google</a>
+            <div class="signup-link">
+                <p>Don't have an account? <a href="signup.html">Sign Up</a></p>
+            </div>
+        </form>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <p>© 2025 FilmyBazarBD. All rights reserved.</p>
+    </footer>
+
+    <!-- Theme Toggle Script -->
+    <script>
+        const themeToggle = document.getElementById('theme-toggle');
+        themeToggle.addEventListener('change', () => {
+            document.body.classList.toggle('light-theme');
+        });
+    </script>
+</body>
+</html>
