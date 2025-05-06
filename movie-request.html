@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FilmyBazarBD - Movie Request</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Roboto', sans-serif;
+        }
+
+        body {
+            background-color: #0f0f0f;
+            color: #ffffff;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        /* Light Theme */
+        body.light-theme {
+            background-color: #f5f5f5;
+            color: #333333;
+        }
+
+        .light-theme header, .light-theme nav, .light-theme .request-form, .light-theme footer {
+            background-color: #ffffff;
+            border-color: #e63946;
+        }
+
+        .light-theme .request-form input,
+        .light-theme .request-form select,
+        .light-theme .request-form textarea {
+            background-color: #f0f0f0;
+            color: #333333;
+            border-color: #e63946;
+        }
+
+        .light-theme .request-form input::placeholder,
+        .light-theme .request-form textarea::placeholder {
+            color: #666666;
+        }
+
+        .light-theme .submit-btn {
+            background-color: #e63946;
+        }
+
+        .light-theme .request-form label,
+        .light-theme footer p,
+        .light-theme .error-message {
+            color: #333333;
+        }
+
+        /* Header */
+        header {
+            background-color: #1c2526;
+            padding: 20px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid #e63946;
+            transition: background-color 0.3s ease;
+        }
+
+        .logo h1 {
+            font-size: 2em;
+            font-weight: 700;
+            color: #e63946;
+        }
+
+        .logo p {
+            font-size: 0.9em;
+            color: #a8a8a8;
+            margin-top: 5px;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .auth-buttons a, .admin-btn {
+            color: #ffffff;
+            text-decoration: none;
+            padding: 8px 16px;
+            border: 1px solid #e63946;
+            border-radius: 5px;
+            font-size: 0.9em;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .admin-btn {
+            border-color: #2a9d8f;
+        }
+
+        .auth-buttons a:hover, .admin-btn:hover {
+            background-color: #e63946;
+            color: #ffffff;
+        }
+
+        .admin-btn:hover {
+            background-color: #2a9d8f;
+        }
+
+        .theme-toggle {
+            display: flex;
+            align-items: center;
+        }
+
+        .theme-toggle input {
+            display: none;
+        }
+
+        .theme-toggle label {
+            cursor: pointer;
+            padding: 8px;
+            font-size: 1.2em;
+            color: #a8a8a8;
+            transition: color 0.3s ease;
+        }
+
+        .theme-toggle input:checked + label {
+            color: #e63946;
+        }
+
+        /* Navigation */
+        nav {
+            background-color: #1c2526;
+            padding: 10px 40px;
+            display: flex;
+            justify-content: center;
+            border-bottom: 1px solid #2a2f30;
+            transition: background-color 0.3s ease;
+        }
+
+        nav a {
+            color: #a8a8a8;
+            text-decoration: none;
+            margin: 0 15px;
+            font-size: 0.9em;
+            font-weight: 400;
+            transition: color 0.3s ease, transform 0.3s ease;
+        }
+
+        nav a:hover {
+            color: #e63946;
+            transform: translateY(-2px);
+        }
+
+        /* Request Form Section */
+        .request-section {
+            padding: 40px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .request-section h2 {
+            font-size: 1.8em;
+            color: #e63946;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .request-form {
+            background-color: #1c2526;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+            transition: background-color 0.3s ease;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 1em;
+            color: #ffffff;
+            margin-bottom: 8px;
+            font-weight: 400;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #2a2f30;
+            border-radius: 5px;
+            background-color: #2a2f30;
+            color: #ffffff;
+            font-size: 1em;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #e63946;
+            box-shadow: 0 0 8px rgba(230, 57, 70, 0.5);
+        }
+
+        .form-group input::placeholder,
+        .form-group textarea::placeholder {
+            color: #a8a8a8;
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .form-group input[type="file"] {
+            padding: 10px 0;
+            border: none;
+            background: none;
+        }
+
+        .form-note {
+            font-size: 0.85em;
+            color: #a8a8a8;
+            margin-top: 5px;
+            display: block;
+        }
+
+        .error-message {
+            color: #e63946;
+            font-size: 0.85em;
+            margin-top: 5px;
+            display: none;
+        }
+
+        .submit-btn {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            background-color: #e63946;
+            color: #ffffff;
+            border: none;
+            border-radius: 5px;
+            font-size: 1em;
+            font-weight: 400;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+            text-align: center;
+        }
+
+        .submit-btn:hover {
+            background-color: #d00000;
+            transform: scale(1.05);
+        }
+
+        /* Footer */
+        footer {
+            background-color: #1c2526;
+            text-align: center;
+            padding: 15px;
+            border-top: 1px solid #2a2f30;
+            transition: background-color 0.3s ease;
+            margin-top: 40px;
+        }
+
+        footer p {
+            font-size: 0.8em;
+            color: #a8a8a8;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            header {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .header-right {
+                margin-top: 10px;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .auth-buttons a, .admin-btn {
+                padding: 6px 12px;
+                font-size: 0.8em;
+            }
+
+            nav {
+                padding: 10px 20px;
+            }
+
+            nav a {
+                margin: 0 10px;
+                font-size: 0.8em;
+            }
+
+            .request-section {
+                padding: 20px;
+            }
+
+            .request-form {
+                padding: 20px;
+            }
+
+            .request-section h2 {
+                font-size: 1.5em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="logo">
+            <h1>FilmyBazarBD</h1>
+            <p>নতুন মুভির হাট, ২৪ ঘণ্টা জমজমাট!</p>
+        </div>
+        <div class="header-right">
+            <div class="auth-buttons">
+                <a href="login.html">Login</a>
+                <a href="signup.html">Sign Up</a>
+                <a href="admin-login.html" class="admin-btn">Admin</a>
+            </div>
+            <div class="theme-toggle">
+                <input type="checkbox" id="theme-toggle">
+                <label for="theme-toggle">🌙</label>
+            </div>
+        </div>
+    </header>
+
+    <!-- Navigation -->
+    <nav>
+        <a href="#home">Home</a>
+        <a href="#request-movie">Request Movie</a>
+        <a href="#social-media">Social Media</a>
+        <a href="#contact">Contact Us</a>
+    </nav>
+
+    <!-- Movie Request Form -->
+    <section class="request-section">
+        <h2>Request a Movie</h2>
+        <form class="request-form" id="movie-request-form">
+            <div class="form-group">
+                <label for="movie-title">Movie Title</label>
+                <input type="text" id="movie-title" name="movie-title" placeholder="Enter the movie title" required>
+            </div>
+            <div class="form-group">
+                <label for="language">Language</label>
+                <select id="language" name="language" required>
+                    <option value="" disabled selected>Select a language</option>
+                    <option value="english">English</option>
+                    <option value="hindi">Hindi</option>
+                    <option value="hindi-dubbed">Hindi Dubbed</option>
+                    <option value="bengali">Bengali</option>
+                    <option value="tamil">Tamil</option>
+                    <option value="telugu">Telugu</option>
+                    <option value="other">Other</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="release-date">Release Date</label>
+                <input type="date" id="release-date" name="release-date" required>
+            </div>
+            <div class="form-group">
+                <label for="movie-posters">Upload Movie Posters (Minimum 3 Images Required)</label>
+                <input type="file" id="movie-posters" name="movie-posters[]" accept="image/*" multiple required>
+                <span class="form-note">Select at least 3 images (e.g., posters or promotional images).</span>
+                <span class="error-message" id="image-error">Please upload at least 3 images.</span>
+            </div>
+            <div class="form-group">
+                <label for="comments">Comment Details</label>
+                <textarea id="comments" name="comments" placeholder="Provide any additional details (e.g., specific version, quality, or reason for request)" required></textarea>
+            </div>
+            <button type="submit" class="submit-btn">Submit Request</button>
+        </form>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <p>© 2025 FilmyBazarBD. All rights reserved.</p>
+    </footer>
+
+    <!-- Scripts -->
+    <script>
+        // Theme Toggle
+        const themeToggle = document.getElementById('theme-toggle');
+        themeToggle.addEventListener('change', () => {
+            document.body.classList.toggle('light-theme');
+        });
+
+        // Image Upload Validation
+        const form = document.getElementById('movie-request-form');
+        const imageInput = document.getElementById('movie-posters');
+        const errorMessage = document.getElementById('image-error');
+
+        form.addEventListener('submit', (e) => {
+            const files = imageInput.files;
+            if (files.length < 3) {
+                e.preventDefault();
+                errorMessage.style.display = 'block';
+            } else {
+                errorMessage.style.display = 'none';
+            }
+        });
+
+        // Clear error message when user selects files
+        imageInput.addEventListener('change', () => {
+            errorMessage.style.display = 'none';
+        });
+    </script>
+</body>
+</html>
