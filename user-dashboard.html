@@ -1,0 +1,739 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FilmyBazarBD - User Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Roboto', sans-serif;
+        }
+
+        body {
+            background-color: #0f0f0f;
+            color: #ffffff;
+            transition: background-color 0.3s ease, color 0.3s ease;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Light Theme */
+        body.light-theme {
+            background-color: #f5f5f5;
+            color: #333333;
+        }
+
+        .light-theme header, .light-theme .dashboard-section, .light-theme footer {
+            background-color: #ffffff;
+            border-color: #e63946;
+        }
+
+        .light-theme .dashboard-section input,
+        .light-theme .dashboard-section select,
+        .light-theme .dashboard-section textarea {
+            background-color: #f0f0f0;
+            color: #333333;
+            border-color: #e63946;
+        }
+
+        .light-theme .dashboard-section input::placeholder,
+        .light-theme .dashboard-section textarea::placeholder {
+            color: #666666;
+        }
+
+        .light-theme .action-btn, .light-theme .submit-btn {
+            background-color: #e63946;
+        }
+
+        .light-theme .dashboard-section label,
+        .light-theme footer p,
+        .light-theme .notification-item {
+            color: #333333;
+        }
+
+        /* Header */
+        header {
+            background-color: #1c2526;
+            padding: 20px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid #e63946;
+            transition: background-color 0.3s ease;
+            position: static;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav-left {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .logo h1 {
+            font-size: 2em;
+            font-weight: 700;
+            color: #e63946;
+        }
+
+        .logo p {
+            font-size: 0.9em;
+            color: #a8a8a8;
+            margin-top: 5px;
+        }
+
+        .nav-center {
+            flex-grow: 1;
+            text-align: center;
+        }
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+        }
+
+        .nav-left a,
+        .nav-center a {
+            color: #ffffff;
+            text-decoration: none;
+            font-size: 1em;
+            padding: 8px 16px;
+            border: 1px solid #e63946;
+            border-radius: 5px;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .nav-left a:hover,
+        .nav-center a:hover {
+            background-color: #e63946;
+            color: #ffffff;
+        }
+
+        .theme-toggle {
+            display: flex;
+            align-items: center;
+        }
+
+        .theme-toggle input {
+            display: none;
+        }
+
+        .theme-toggle label {
+            cursor: pointer;
+            padding: 8px;
+            font-size: 1.2em;
+            color: #a8a8a8;
+            transition: color 0.3s ease;
+        }
+
+        .theme-toggle input:checked + label {
+            color: #e63946;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+        }
+
+        /* Dashboard Section */
+        .dashboard-section {
+            padding: 40px;
+            margin: 20px;
+            background-color: #1c2526;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+            transition: background-color 0.3s ease;
+            width: calc(100% - 40px);
+        }
+
+        .dashboard-section h2 {
+            font-size: 1.8em;
+            color: #e63946;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        /* Profile */
+        .profile {
+            margin-bottom: 30px;
+            width: 100%;
+            background-color: #2a2f30;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .profile h3 {
+            font-size: 1.4em;
+            color: #e63946;
+            margin-bottom: 15px;
+        }
+
+        .profile-pic {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid #e63946;
+            margin-bottom: 15px;
+            transition: transform 0.3s ease, border-color 0.3s ease;
+        }
+
+        .profile-pic:hover {
+            transform: scale(1.05);
+            border-color: #d00000;
+        }
+
+        .profile p {
+            font-size: 1em;
+            color: #a8a8a8;
+            margin-bottom: 10px;
+        }
+
+        /* Edit Profile Form */
+        .edit-profile-form {
+            margin-bottom: 30px;
+            width: 100%;
+            background-color: #2a2f30;
+            padding: 20px;
+            border-radius: 8px;
+        }
+
+        .edit-profile-form h3 {
+            font-size: 1.4em;
+            color: #e63946;
+            margin-bottom: 15px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+            width: 100%;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 1em;
+            color: #ffffff;
+            margin-bottom: 5px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #2a2f30;
+            border-radius: 5px;
+            background-color: #2a2f30;
+            color: #ffffff;
+            font-size: 1em;
+        }
+
+        .form-group input[readonly] {
+            background-color: #1c2526;
+            cursor: not-allowed;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #e63946;
+            box-shadow: 0 0 8px rgba(230, 57, 70, 0.5);
+        }
+
+        .submit-btn {
+            padding: 10px 20px;
+            background-color: #e63946;
+            color: #ffffff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+
+        .submit-btn:hover {
+            background-color: #d00000;
+            transform: scale(1.05);
+        }
+
+        /* Movie Request Form */
+        .movie-request-form {
+            margin-bottom: 30px;
+            width: 100%;
+            background-color: #2a2f30;
+            padding: 20px;
+            border-radius: 8px;
+        }
+
+        .movie-request-form h3 {
+            font-size: 1.4em;
+            color: #e63946;
+            margin-bottom: 15px;
+        }
+
+        .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #2a2f30;
+            border-radius: 5px;
+            background-color: #2a2f30;
+            color: #ffffff;
+            font-size: 1em;
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #e63946;
+            box-shadow: 0 0 8px rgba(230, 57, 70, 0.5);
+        }
+
+        /* Movie Request Status */
+        .movie-request-status {
+            margin-bottom: 30px;
+            width: 100%;
+            background-color: #2a2f30;
+            padding: 20px;
+            border-radius: 8px;
+        }
+
+        .movie-request-status h3 {
+            font-size: 1.4em;
+            color: #e63946;
+            margin-bottom: 15px;
+        }
+
+        .request-table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: #2a2f30;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .request-table th,
+        .request-table td {
+            padding: 12px;
+            text-align: left;
+            font-size: 0.9em;
+        }
+
+        .request-table th {
+            background-color: #e63946;
+            color: #ffffff;
+        }
+
+        .request-table tr:nth-child(even) {
+            background-color: #1c2526;
+        }
+
+        /* Movie Management */
+        .movie-management {
+            margin-bottom: 30px;
+            width: 100%;
+        }
+
+        .movie-management h3 {
+            font-size: 1.4em;
+            color: #e63946;
+            margin-bottom: 15px;
+        }
+
+        .movie-table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: #2a2f30;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .movie-table th,
+        .movie-table td {
+            padding: 12px;
+            text-align: left;
+            font-size: 0.9em;
+        }
+
+        .movie-table th {
+            background-color: #e63946;
+            color: #ffffff;
+        }
+
+        .movie-table tr:nth-child(even) {
+            background-color: #1c2526;
+        }
+
+        .action-btn {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 5px;
+            font-size: 0.8em;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+            margin: 2px;
+        }
+
+        .action-btn.edit {
+            background-color: #2a9d8f;
+            color: #ffffff;
+        }
+
+        .action-btn:hover {
+            transform: scale(1.05);
+        }
+
+        .action-btn.edit:hover {
+            background-color: #1b7f73;
+        }
+
+        /* Notifications */
+        .notifications {
+            background-color: #2a2f30;
+            padding: 15px;
+            border-radius: 8px;
+            width: 100%;
+        }
+
+        .notifications h3 {
+            font-size: 1.4em;
+            color: #e63946;
+            margin-bottom: 15px;
+        }
+
+        .notification-item {
+            padding: 10px;
+            font-size: 0.9em;
+            color: #ffffff;
+            background-color: #1c2526;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .notification-item button {
+            background-color: #d00000;
+            color: #ffffff;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .notification-item button:hover {
+            background-color: #b00000;
+        }
+
+        /* Footer */
+        footer {
+            background-color: #1c2526;
+            text-align: center;
+            padding: 15px;
+            border-top: 1px solid #2a2f30;
+            transition: background-color 0.3s ease;
+            width: 100%;
+            margin-top: auto;
+        }
+
+        footer p {
+            font-size: 0.8em;
+            color: #a8a8a8;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            header {
+                flex-direction: column;
+                text-align: center;
+                padding: 20px;
+            }
+
+            .nav-left {
+                flex-direction: column;
+                gap: 10px;
+                width: 100%;
+                align-items: center;
+            }
+
+            .nav-center {
+                margin: 10px 0;
+                width: 100%;
+            }
+
+            .nav-right {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .nav-left a,
+            .nav-center a {
+                width: 100%;
+                text-align: center;
+                padding: 10px;
+            }
+
+            .theme-toggle {
+                margin-top: 10px;
+            }
+
+            .main-content {
+                width: 100%;
+            }
+
+            .dashboard-section {
+                padding: 20px;
+                margin: 10px 0;
+                width: 100%;
+            }
+
+            .profile,
+            .edit-profile-form,
+            .movie-request-form,
+            .movie-request-status,
+            .movie-management,
+            .notifications {
+                width: 100%;
+            }
+
+            .profile-pic {
+                width: 60px;
+                height: 60px;
+            }
+
+            .movie-table,
+            .request-table {
+                font-size: 0.8em;
+            }
+
+            .movie-table th, .movie-table td,
+            .request-table th, .request-table td {
+                padding: 8px;
+            }
+
+            .action-btn {
+                padding: 4px 8px;
+                font-size: 0.7em;
+            }
+
+            .form-group textarea {
+                min-height: 80px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Header -->
+        <header>
+            <div class="nav-left">
+                <div class="logo">
+                    <h1>FilmyBazarBD</h1>
+                    <p>নতুন মুভির হাট, ২৪ ঘণ্টা জমজমাট!</p>
+                </div>
+                <a href="admin-login.html">Logout</a>
+            </div>
+            <div class="nav-center">
+                <a href="index.html">Home</a>
+            </div>
+            <div class="nav-right">
+                <div class="theme-toggle">
+                    <input type="checkbox" id="theme-toggle">
+                    <label for="theme-toggle">🌙</label>
+                </div>
+            </div>
+        </header>
+
+        <!-- Dashboard Section -->
+        <section class="dashboard-section">
+            <h2>FilmyBazarBD User Dashboard</h2>
+
+            <!-- Profile -->
+            <div class="profile">
+                <h3>My Profile</h3>
+                <img src="/images/profile-placeholder.png" alt="Profile Picture" class="profile-pic">
+                <p><strong>Name:</strong> Bob Jones</p>
+                <p><strong>Email:</strong> bob.jones@filmybazarbd.com</p>
+                <p><strong>User ID:</strong> user_003</p>
+                <p><strong>Role:</strong> User</p>
+            </div>
+
+            <!-- Edit Profile Form -->
+            <div class="edit-profile-form">
+                <h3>Edit Profile</h3>
+                <form id="edit-profile-form">
+                    <div class="form-group">
+                        <label for="name">Name</label>
+                        <input type="text" id="name" name="name" value="Bob Jones" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input type="email" id="email" name="email" value="bob.jones@filmybazarbd.com" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label for="profile-pic">Profile Picture</label>
+                        <input type="file" id="profile-pic" name="profile-pic" accept="image/*">
+                    </div>
+                    <button type="submit" class="submit-btn">Save Changes</button>
+                </form>
+            </div>
+
+            <!-- Movie Request Form -->
+            <div class="movie-request-form">
+                <h3>Request a Movie</h3>
+                <form id="movie-request-form">
+                    <div class="form-group">
+                        <label for="movie-title">Movie Title</label>
+                        <input type="text" id="movie-title" name="title" placeholder="Enter movie title" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="movie-message">Message</label>
+                        <textarea id="movie-message" name="message" placeholder="Add details (e.g., year, quality, language)" required></textarea>
+                    </div>
+                    <button type="submit" class="submit-btn">Submit Request</button>
+                </form>
+            </div>
+
+            <!-- Movie Request Status -->
+            <div class="movie-request-status">
+                <h3>Movie Request Status</h3>
+                <table class="request-table">
+                    <thead>
+                        <tr>
+                            <th>Title</th>
+                            <th>Message</th>
+                            <th>Status</th>
+                            <th>Date</th>
+                        </tr>
+                    </thead>
+                    <tbody id="request-table-body">
+                        <tr>
+                            <td>Inception</td>
+                            <td>Looking for 1080p, English</td>
+                            <td>Submitted</td>
+                            <td>2025-05-06</td>
+                        </tr>
+                        <tr>
+                            <td>The Matrix</td>
+                            <td>Need Hindi dubbed</td>
+                            <td>Approved</td>
+                            <td>2025-05-05</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Movie Management -->
+            <div class="movie-management">
+                <h3>My Posted Movies</h3>
+                <div class="action-buttons">
+                    <a href="admin-post.html" class="action-btn edit">Add New Movie</a>
+                </div>
+                <table class="movie-table">
+                    <thead>
+                        <tr>
+                            <th>Title</th>
+                            <th>Status</th>
+                            <th>Views</th>
+                            <th>Downloads</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="movie-table-body">
+                        <tr>
+                            <td>Inception</td>
+                            <td>Pending</td>
+                            <td>0</td>
+                            <td>0</td>
+                            <td>
+                                <button class="action-btn edit" onclick="editMovie(3)">Edit</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Notifications -->
+            <div class="notifications">
+                <h3>Notifications</h3>
+                <div class="notification-item">
+                    <span>Your movie request for "Inception" has been submitted.</span>
+                    <button onclick="dismissNotification(1)">Dismiss</button>
+                </div>
+                <div class="notification-item">
+                    <span>Warning: Invalid links detected in your movie post.</span>
+                    <button onclick="dismissNotification(2)">Dismiss</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer>
+            <p>© 2025 FilmyBazarBD. All rights reserved.</p>
+        </footer>
+    </div>
+
+    <!-- Scripts -->
+    <script>
+        // Theme Toggle
+        const themeToggle = document.getElementById('theme-toggle');
+        themeToggle.addEventListener('change', () => {
+            document.body.classList.toggle('light-theme');
+        });
+
+        // Edit Profile Form
+        const editProfileForm = document.getElementById('edit-profile-form');
+        editProfileForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const name = document.getElementById('name').value;
+            const profilePic = document.getElementById('profile-pic').files[0];
+
+            alert(`Profile updated: ${name}`);
+            // Call backend API: POST /users/me { name, profilePic }
+            editProfileForm.reset();
+        });
+
+        // Movie Request Form
+        const movieRequestForm = document.getElementById('movie-request-form');
+        movieRequestForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const title = document.getElementById('movie-title').value;
+            const message = document.getElementById('movie-message').value;
+
+            if (title && message) {
+                alert(`Submitted movie request: ${title}`);
+                const notifications = document.querySelector('.notifications');
+                const notificationItem = document.createElement('div');
+                notificationItem.className = 'notification-item';
+                notificationItem.innerHTML = `
+                    <span>Your movie request for "${title}" has been submitted.</span>
+                    <button onclick="dismissNotification(${Date.now()})">Dismiss</button>
+                `;
+                notifications.appendChild(notificationItem);
+                movieRequestForm.reset();
+                // Call backend API: POST /movie-requests { title, message, user: 'bob.jones' }
+            }
+        });
+
+        // Movie Actions
+        function editMovie(id) {
+            window.location.href = `admin-post.html?id=${id}`;
+        }
+
+        // Notification Action
+        function dismissNotification(id) {
+            alert(`Dismissed notification ID: ${id}`);
+            document.querySelector(`.notification-item button[onclick="dismissNotification(${id})"]`)?.closest('.notification-item').remove();
+            // Call backend API: DELETE /notifications/${id}
+        }
+    </script>
+</body>
+</html>
