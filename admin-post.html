@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FilmyBazarBD - Admin Post Movie</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Roboto', sans-serif;
+        }
+
+        body {
+            background-color: #0f0f0f;
+            color: #ffffff;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        /* Light Theme */
+        body.light-theme {
+            background-color: #f5f5f5;
+            color: #333333;
+        }
+
+        .light-theme header, .light-theme .post-form-section, .light-theme footer {
+            background-color: #ffffff;
+            border-color: #e63946;
+        }
+
+        .light-theme .post-form input,
+        .light-theme .post-form textarea,
+        .light-theme .post-form select {
+            background-color: #f0f0f0;
+            color: #333333;
+            border-color: #e63946;
+        }
+
+        .light-theme .post-form input::placeholder,
+        .light-theme .post-form textarea::placeholder {
+            color: #666666;
+        }
+
+        .light-theme .submit-btn, .light-theme .add-link-btn, .light-theme .remove-link-btn {
+            background-color: #e63946;
+        }
+
+        .light-theme .post-form label,
+        .light-theme footer p {
+            color: #333333;
+        }
+
+        /* Header */
+        header {
+            background-color: #1c2526;
+            padding: 20px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid #e63946;
+            transition: background-color 0.3s ease;
+        }
+
+        .logo h1 {
+            font-size: 2em;
+            font-weight: 700;
+            color: #e63946;
+        }
+
+        .logo p {
+            font-size: 0.9em;
+            color: #a8a8a8;
+            margin-top: 5px;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .auth-buttons a, .admin-btn {
+            color: #ffffff;
+            text-decoration: none;
+            padding: 8px 16px;
+            border: 1px solid #e63946;
+            border-radius: 5px;
+            font-size: 0.9em;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .admin-btn {
+            border-color: #2a9d8f;
+        }
+
+        .auth-buttons a:hover, .admin-btn:hover {
+            background-color: #e63946;
+            color: #ffffff;
+        }
+
+        .admin-btn:hover {
+            background-color: #2a9d8f;
+        }
+
+        .theme-toggle {
+            display: flex;
+            align-items: center;
+        }
+
+        .theme-toggle input {
+            display: none;
+        }
+
+        .theme-toggle label {
+            cursor: pointer;
+            padding: 8px;
+            font-size: 1.2em;
+            color: #a8a8a8;
+            transition: color 0.3s ease;
+        }
+
+        .theme-toggle input:checked + label {
+            color: #e63946;
+        }
+
+        /* Post Form Section */
+        .post-form-section {
+            padding: 40px;
+            max-width: 800px;
+            margin: 20px auto;
+            background-color: #1c2526;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+            transition: background-color 0.3s ease;
+        }
+
+        .post-form-section h2 {
+            font-size: 1.8em;
+            color: #e63946;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .post-form {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .form-group label {
+            font-size: 1em;
+            color: #ffffff;
+            font-weight: 400;
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #2a2f30;
+            border-radius: 5px;
+            background-color: #2a2f30;
+            color: #ffffff;
+            font-size: 1em;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #e63946;
+            box-shadow: 0 0 8px rgba(230, 57, 70, 0.5);
+        }
+
+        .form-group input::placeholder,
+        .form-group textarea::placeholder {
+            color: #a8a8a8;
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .form-group input[type="file"] {
+            padding: 8px;
+        }
+
+        .form-group .tags-input {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            padding: 10px;
+            border: 1px solid #2a2f30;
+            border-radius: 5px;
+            background-color: #2a2f30;
+        }
+
+        .form-group .tags-input span {
+            background-color: #e63946;
+            color: #ffffff;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 0.9em;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .form-group .tags-input span button {
+            background: none;
+            border: none;
+            color: #ffffff;
+            cursor: pointer;
+            font-size: 0.8em;
+        }
+
+        .form-group .tags-input input {
+            border: none;
+            background: none;
+            flex-grow: 1;
+            min-width: 100px;
+        }
+
+        .form-group .tags-input input:focus {
+            border: none;
+            box-shadow: none;
+        }
+
+        .info-group {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        /* Download Links Section */
+        .download-links {
+            border: 1px solid #2a2f30;
+            border-radius: 5px;
+            padding: 15px;
+            background-color: #2a2f30;
+        }
+
+        .download-links h3 {
+            font-size: 1.2em;
+            color: #e63946;
+            margin-bottom: 15px;
+        }
+
+        .link-entry {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr 1fr 50px;
+            gap: 10px;
+            margin-bottom: 10px;
+            align-items: center;
+        }
+
+        .link-entry input,
+        .link-entry select {
+            padding: 8px;
+            font-size: 0.9em;
+        }
+
+        .remove-link-btn {
+            padding: 8px;
+            background-color: #e63946;
+            color: #ffffff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+
+        .remove-link-btn:hover {
+            background-color: #d00000;
+            transform: scale(1.05);
+        }
+
+        .add-link-btn {
+            padding: 10px 20px;
+            background-color: #2a9d8f;
+            color: #ffffff;
+            border: none;
+            border-radius: 5px;
+            font-size: 1em;
+            cursor: pointer;
+            align-self: flex-start;
+            margin-top: 10px;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+
+        .add-link-btn:hover {
+            background-color: #1b7f73;
+            transform: scale(1.05);
+        }
+
+        .submit-btn {
+            padding: 12px 20px;
+            background-color: #e63946;
+            color: #ffffff;
+            border: none;
+            border-radius: 5px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+            align-self: flex-end;
+        }
+
+        .submit-btn:hover {
+            background-color: #d00000;
+            transform: scale(1.05);
+        }
+
+        /* Footer */
+        footer {
+            background-color: #1c2526;
+            text-align: center;
+            padding: 15px;
+            border-top: 1px solid #2a2f30;
+            transition: background-color 0.3s ease;
+            margin-top: 40px;
+        }
+
+        footer p {
+            font-size: 0.8em;
+            color: #a8a8a8;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            header {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .header-right {
+                margin-top: 10px;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .auth-buttons a, .admin-btn {
+                padding: 6px 12px;
+                font-size: 0.8em;
+            }
+
+            .post-form-section {
+                padding: 20px;
+            }
+
+            .post-form-section h2 {
+                font-size: 1.5em;
+            }
+
+            .info-group {
+                grid-template-columns: 1fr;
+            }
+
+            .link-entry {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+
+            .remove-link-btn {
+                align-self: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="logo">
+            <h1>FilmyBazarBD</h1>
+            <p>নতুন মুভির হাট, ২৪ ঘণ্টা জমজমাট!</p>
+        </div>
+        <div class="header-right">
+            <div class="auth-buttons">
+                <a href="admin-login.html">Logout</a>
+                <a href="admin-dashboard.html" class="admin-btn">Dashboard</a>
+            </div>
+            <div class="theme-toggle">
+                <input type="checkbox" id="theme-toggle">
+                <label for="theme-toggle">🌙</label>
+            </div>
+        </div>
+    </header>
+
+    <!-- Post Form Section -->
+    <section class="post-form-section">
+        <h2>Post a New Movie</h2>
+        <form class="post-form" action="/post-movie" method="POST" enctype="multipart/form-data">
+            <div class="form-group">
+                <label for="title">Title</label>
+                <input type="text" id="title" name="title" placeholder="Enter movie title" required>
+            </div>
+            <div class="form-group">
+                <label for="quality">Quality Indicator</label>
+                <input type="text" id="quality" name="quality" placeholder="e.g., High Quality, User Recommended" required>
+            </div>
+            <div class="form-group">
+                <label for="description">Description</label>
+                <textarea id="description" name="description" placeholder="Enter movie description" required></textarea>
+            </div>
+            <div class="form-group">
+                <label for="poster">Poster Image</label>
+                <input type="file" id="poster" name="poster" accept="image/*" required>
+            </div>
+            <div class="form-group">
+                <label for="screenshots">Screenshots (Select 4 images)</label>
+                <input type="file" id="screenshots" name="screenshots[]" accept="image/*" multiple required>
+            </div>
+            <div class="form-group">
+                <label for="posted-by">Posted By</label>
+                <select id="posted-by" name="posted-by" required>
+                    <option value="" disabled selected>Select role</option>
+                    <option value="admin">Admin</option>
+                    <option value="moderator">Moderator</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="poster-name">Admin/Moderator Name</label>
+                <input type="text" id="poster-name" name="poster-name" placeholder="Enter your name" required>
+            </div>
+            <div class="form-group">
+                <label for="imdb-rating">IMDb Rating</label>
+                <input type="number" id="imdb-rating" name="imdb-rating" step="0.1" min="0" max="10" placeholder="e.g., 7.8" required>
+            </div>
+            <div class="form-group">
+                <label for="tags">Tags</label>
+                <div class="tags-input" id="tags-input">
+                    <input type="text" id="tag-input" placeholder="Type a tag and press Enter">
+                </div>
+                <input type="hidden" id="tags" name="tags">
+            </div>
+            <div class="form-group info-group">
+                <div>
+                    <label for="director">Director</label>
+                    <input type="text" id="director" name="director" placeholder="Enter director name" required>
+                </div>
+                <div>
+                    <label for="cast">Cast</label>
+                    <input type="text" id="cast" name="cast" placeholder="Enter main cast (comma-separated)" required>
+                </div>
+                <div>
+                    <label for="runtime">Runtime</label>
+                    <input type="text" id="runtime" name="runtime" placeholder="e.g., 2h 15m" required>
+                </div>
+                <div>
+                    <label for="genre">Genre</label>
+                    <input type="text" id="genre" name="genre" placeholder="e.g., Action, Thriller" required>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="trailer">Trailer Link</label>
+                <input type="url" id="trailer" name="trailer" placeholder="Enter YouTube trailer URL" required>
+            </div>
+            <div class="form-group">
+                <label for="category">Category</label>
+                <select id="category" name="category" required>
+                    <option value="" disabled selected>Select category</option>
+                    <option value="action">Action</option>
+                    <option value="adventure">Adventure</option>
+                    <option value="thriller">Thriller</option>
+                    <option value="comedy">Comedy</option>
+                    <option value="drama">Drama</option>
+                    <option value="romance">Romance</option>
+                    <option value="sci-fi">Sci-Fi</option>
+                    <option value="hindi-dubbed">Hindi Dubbed</option>
+                    <option value="bengali">Bengali</option>
+                </select>
+            </div>
+            <div class="form-group download-links">
+                <h3>Download Links</h3>
+                <div id="links-container"></div>
+                <button type="button" class="add-link-btn" onclick="addLinkEntry()">Add Download Link</button>
+            </div>
+            <button type="submit" class="submit-btn">Post Movie</button>
+        </form>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <p>© 2025 FilmyBazarBD. All rights reserved.</p>
+    </footer>
+
+    <!-- Scripts -->
+    <script>
+        // Theme Toggle
+        const themeToggle = document.getElementById('theme-toggle');
+        themeToggle.addEventListener('change', () => {
+            document.body.classList.toggle('light-theme');
+        });
+
+        // Tags Input
+        const tagsInput = document.getElementById('tags-input');
+        const tagInput = document.getElementById('tag-input');
+        const tagsHidden = document.getElementById('tags');
+        let tags = [];
+
+        function updateTags() {
+            tagsInput.querySelectorAll('span').forEach(span => span.remove());
+            tags.forEach(tag => {
+                const span = document.createElement('span');
+                span.textContent = tag;
+                const removeBtn = document.createElement('button');
+                removeBtn.textContent = '×';
+                removeBtn.onclick = () => {
+                    tags = tags.filter(t => t !== tag);
+                    updateTags();
+                };
+                span.appendChild(removeBtn);
+                tagsInput.insertBefore(span, tagInput);
+            });
+            tagsHidden.value = tags.join(',');
+        }
+
+        tagInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' && tagInput.value.trim()) {
+                e.preventDefault();
+                const tag = tagInput.value.trim();
+                if (!tags.includes(tag)) {
+                    tags.push(tag);
+                    updateTags();
+                }
+                tagInput.value = '';
+            }
+        });
+
+        // Download Links
+        let linkCount = 0;
+
+        function addLinkEntry() {
+            const container = document.getElementById('links-container');
+            const entry = document.createElement('div');
+            entry.className = 'link-entry';
+            entry.innerHTML = `
+                <select name="links[${linkCount}][quality]" required>
+                    <option value="" disabled selected>Quality</option>
+                    <option value="480p">480p</option>
+                    <option value="720p">720p</option>
+                    <option value="1080p">1080p</option>
+                    <option value="4K">4K</option>
+                </select>
+                <select name="links[${linkCount}][language]" required>
+                    <option value="" disabled selected>Language</option>
+                    <option value="Hindi">Hindi</option>
+                    <option value="Hindi Dubbed">Hindi Dubbed</option>
+                    <option value="Bengali">Bengali</option>
+                    <option value="English">English</option>
+                </select>
+                <input type="text" name="links[${linkCount}][size]" placeholder="Size (e.g., 2.1GB)" required>
+                <input type="url" name="links[${linkCount}][url]" placeholder="Download URL" required>
+                <button type="button" class="remove-link-btn" onclick="this.parentElement.remove()">Remove</button>
+            `;
+            container.appendChild(entry);
+            linkCount++;
+        }
+
+        // Add initial link entry
+        addLinkEntry();
+    </script>
+</body>
+</html>
