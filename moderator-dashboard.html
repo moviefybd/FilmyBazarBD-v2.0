@@ -1,0 +1,1100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FilmyBazarBD - Moderator Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Roboto', sans-serif;
+        }
+
+        body {
+            background-color: #0f0f0f;
+            color: #ffffff;
+            transition: background-color 0.3s ease, color 0.3s ease;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Light Theme */
+        body.light-theme {
+            background-color: #f5f5f5;
+            color: #333333;
+        }
+
+        .light-theme header, .light-theme .dashboard-section, .light-theme footer {
+            background-color: #ffffff;
+            border-color: #e63946;
+        }
+
+        .light-theme .dashboard-section input,
+        .light-theme .dashboard-section select {
+            background-color: #f0f0f0;
+            color: #333333;
+            border-color: #e63946;
+        }
+
+        .light-theme .dashboard-section input::placeholder {
+            color: #666666;
+        }
+
+        .light-theme .action-btn, .light-theme .submit-btn {
+            background-color: #e63946;
+        }
+
+        .light-theme .dashboard-section label,
+        .light-theme footer p,
+        .light-theme .notification-item {
+            color: #333333;
+        }
+
+        /* Profile Section */
+        .profile-section {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            background-color: #2a2f30;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            width: 100%;
+        }
+
+        .profile-photo-container {
+            position: relative;
+            width: 100px;
+            height: 100px;
+        }
+
+        .profile-photo {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #e63946;
+        }
+
+        .profile-photo-upload {
+            display: none;
+        }
+
+        .profile-photo-label {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            background-color: #e63946;
+            color: #ffffff;
+            padding: 5px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 0.8em;
+            line-height: 1;
+        }
+
+        .profile-details h3 {
+            font-size: 1.4em;
+            color: #e63946;
+            margin-bottom: 5px;
+        }
+
+        .profile-details p {
+            font-size: 1em;
+            color: #a8a8a8;
+            margin-bottom: 5px;
+        }
+
+        .light-theme .profile-section {
+            background-color: #f0f0f0;
+        }
+
+        .light-theme .profile-details p {
+            color: #666666;
+        }
+
+        /* Header */
+        header {
+            background-color: #1c2526;
+            padding: 20px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid #e63946;
+            transition: background-color 0.3s ease;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo h1 {
+            font-size: 2em;
+            font-weight: 700;
+            color: #e63946;
+        }
+
+        .logo p {
+            font-size: 0.9em;
+            color: #a8a8a8;
+            margin-top: 5px;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .auth-buttons a {
+            color: #ffffff;
+            text-decoration: none;
+            padding: 8px 16px;
+            border: 1px solid #e63946;
+            border-radius: 5px;
+            font-size: 0.9em;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .auth-buttons a:hover {
+            background-color: #e63946;
+            color: #ffffff;
+        }
+
+        .theme-toggle {
+            display: flex;
+            align-items: center;
+        }
+
+        .theme-toggle input {
+            display: none;
+        }
+
+        .theme-toggle label {
+            cursor: pointer;
+            padding: 8px;
+            font-size: 1.2em;
+            color: #a8a8a8;
+            transition: color 0.3s ease;
+        }
+
+        .theme-toggle input:checked + label {
+            color: #e63946;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+        }
+
+        /* Dashboard Section */
+        .dashboard-section {
+            padding: 40px;
+            margin: 20px;
+            background-color: #1c2526;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+            transition: background-color 0.3s ease;
+            width: calc(100% - 40px);
+        }
+
+        .dashboard-section h2 {
+            font-size: 1.8em;
+            color: #e63946;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        /* Recent Activity */
+        .recent-activity {
+            margin-bottom: 30px;
+            width: 100%;
+            background-color: #2a2f30;
+            padding: 20px;
+            border-radius: 8px;
+        }
+
+        .recent-activity h3 {
+            font-size: 1.4em;
+            color: #e63946;
+            margin-bottom: 15px;
+        }
+
+        .activity-item {
+            padding: 10px;
+            font-size: 0.9em;
+            color: #a8a8a8;
+            border-bottom: 1px solid #1c2526;
+        }
+
+        .activity-item:last-child {
+            border-bottom: none;
+        }
+
+        /* Stats Overview */
+        .stats-filter {
+            margin-bottom: 10px;
+            width: 100%;
+        }
+
+        .stats-filter select {
+            padding: 10px;
+            border: 1px solid #2a2f30;
+            border-radius: 5px;
+            background-color: #2a2f30;
+            color: #ffffff;
+            font-size: 1em;
+            width: 200px;
+        }
+
+        .stats-overview {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-bottom: 30px;
+            width: 100%;
+        }
+
+        .stat-card {
+            background-color: #2a2f30;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            flex: 1;
+        }
+
+        .stat-card h4 {
+            font-size: 1.2em;
+            color: #e63946;
+            margin-bottom: 10px;
+        }
+
+        .stat-card p {
+            font-size: 1.5em;
+            color: #ffffff;
+        }
+
+        /* Pending Approvals */
+        .pending-approvals {
+            margin-bottom: 30px;
+            width: 100%;
+        }
+
+        .pending-table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: #2a2f30;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .pending-table th,
+        .pending-table td {
+            padding: 12px;
+            text-align: left;
+            font-size: 0.9em;
+        }
+
+        .pending-table th {
+            background-color: #e63946;
+            color: #ffffff;
+        }
+
+        .pending-table tr:nth-child(even) {
+            background-color: #1c2526;
+        }
+
+        /* Search & Filter */
+        .search-filter {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 20px;
+            width: 100%;
+        }
+
+        .search-filter input,
+        .search-filter select {
+            padding: 12px;
+            border: 1px solid #2a2f30;
+            border-radius: 5px;
+            background-color: #2a2f30;
+            color: #ffffff;
+            font-size: 1em;
+            flex: 1;
+        }
+
+        .search-filter input:focus,
+        .search-filter select:focus {
+            outline: none;
+            border-color: #e63946;
+            box-shadow: 0 0 8px rgba(230, 57, 70, 0.5);
+        }
+
+        /* Movie Management */
+        .movie-management {
+            margin-bottom: 30px;
+            width: 100%;
+        }
+
+        .movie-table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: #2a2f30;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .movie-table th,
+        .movie-table td {
+            padding: 12px;
+            text-align: left;
+            font-size: 0.9em;
+        }
+
+        .movie-table th {
+            background-color: #e63946;
+            color: #ffffff;
+        }
+
+        .movie-table tr:nth-child(even) {
+            background-color: #1c2526;
+        }
+
+        .movie-table .badge {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 5px;
+            font-size: 0.8em;
+        }
+
+        .badge.admin {
+            background-color: #e63946;
+            color: #ffffff;
+        }
+
+        .badge.moderator {
+            background-color: #2a9d8f;
+            color: #ffffff;
+        }
+
+        .action-btn {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 5px;
+            font-size: 0.8em;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+
+        .action-btn.edit {
+            background-color: #2a9d8f;
+            color: #ffffff;
+        }
+
+        .action-btn.delete {
+            background-color: #d00000;
+            color: #ffffff;
+        }
+
+        .action-btn.approve {
+            background-color: #2a9d8f;
+            color: #ffffff;
+        }
+
+        .action-btn:hover {
+            transform: scale(1.05);
+        }
+
+        .action-btn.edit:hover, .action-btn.approve:hover {
+            background-color: #1b7f73;
+        }
+
+        .action-btn.delete:hover {
+            background-color: #b00000;
+        }
+
+        /* User Management */
+        .user-management {
+            margin-bottom: 30px;
+            width: 100%;
+        }
+
+        .user-form {
+            background-color: #2a2f30;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            width: 100%;
+        }
+
+        .user-form h4 {
+            font-size: 1.2em;
+            color: #e63946;
+            margin-bottom: 15px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+            width: 100%;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 1em;
+            color: #ffffff;
+            margin-bottom: 5px;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #2a2f30;
+            border-radius: 5px;
+            background-color: #2a2f30;
+            color: #ffffff;
+            font-size: 1em;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #e63946;
+            box-shadow: 0 0 8px rgba(230, 57, 70, 0.5);
+        }
+
+        .submit-btn {
+            padding: 10px 20px;
+            background-color: #e63946;
+            color: #ffffff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+
+        .submit-btn:hover {
+            background-color: #d00000;
+            transform: scale(1.05);
+        }
+
+        .user-table, .user-id-table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: #2a2f30;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .user-table th,
+        .user-table td,
+        .user-id-table th,
+        .user-id-table td {
+            padding: 12px;
+            text-align: left;
+            font-size: 0.9em;
+        }
+
+        .user-table th,
+        .user-id-table th {
+            background-color: #e63946;
+            color: #ffffff;
+        }
+
+        .user-table tr:nth-child(even),
+        .user-id-table tr:nth-child(even) {
+            background-color: #1c2526;
+        }
+
+        /* Notifications */
+        .notifications {
+            background-color: #2a2f30;
+            padding: 15px;
+            border-radius: 8px;
+            width: 100%;
+        }
+
+        .notification-item {
+            padding: 10px;
+            font-size: 0.9em;
+            color: #ffffff;
+            background-color: #1c2526;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .notification-item button {
+            background-color: #d00000;
+            color: #ffffff;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .notification-item button:hover {
+            background-color: #b00000;
+        }
+
+        /* Footer */
+        footer {
+            background-color: #1c2526;
+            text-align: center;
+            padding: 15px;
+            border-top: 1px solid #2a2f30;
+            transition: background-color 0.3s ease;
+            width: 100%;
+            margin-top: auto;
+        }
+
+        footer p {
+            font-size: 0.8em;
+            color: #a8a8a8;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            header {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .header-right {
+                margin-top: 10px;
+            }
+
+            .main-content {
+                width: 100%;
+            }
+
+            .dashboard-section {
+                padding: 20px;
+                margin: 10px 0;
+                width: 100%;
+            }
+
+            .profile-section {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+            }
+
+            .profile-photo-container {
+                width: 80px;
+                height: 80px;
+            }
+
+            .stats-overview {
+                grid-template-columns: 1fr;
+            }
+
+            .stat-card {
+                width: 100%;
+            }
+
+            .stats-filter select {
+                width: 100%;
+            }
+
+            .search-filter {
+                flex-direction: column;
+            }
+
+            .movie-management,
+            .user-management,
+            .notifications,
+            .recent-activity,
+            .pending-approvals,
+            .user-id-table {
+                width: 100%;
+            }
+
+            .movie-table, .user-table, .pending-table, .user-id-table {
+                font-size: 0.8em;
+            }
+
+            .movie-table th, .movie-table td,
+            .user-table th, .user-table td,
+            .pending-table th, .pending-table td,
+            .user-id-table th, .user-id-table td {
+                padding: 8px;
+            }
+
+            .action-btn {
+                padding: 4px 8px;
+                font-size: 0.7em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Header -->
+        <header>
+            <div class="logo">
+                <h1>FilmyBazarBD</h1>
+                <p>নতুন মুভির হাট, ২৪ ঘণ্টা জমজমাট!</p>
+            </div>
+            <div class="header-right">
+                <div class="auth-buttons">
+                    <a href="admin-login.html">Logout</a>
+                </div>
+                <div class="theme-toggle">
+                    <input type="checkbox" id="theme-toggle">
+                    <label for="theme-toggle">🌙</label>
+                </div>
+            </div>
+        </header>
+
+        <!-- Dashboard Section -->
+        <section class="dashboard-section">
+            <h2>FilmyBazarBD Moderator Dashboard</h2>
+
+            <!-- Profile Section -->
+            <div class="profile-section">
+                <div class="profile-photo-container">
+                    <img src="https://via.placeholder.com/100" alt="Profile Photo" class="profile-photo" id="profile-photo">
+                    <label for="profile-photo-upload" class="profile-photo-label">📷</label>
+                    <input type="file" id="profile-photo-upload" class="profile-photo-upload" accept="image/*">
+                </div>
+                <div class="profile-details">
+                    <h3>John Doe</h3>
+                    <p>Email: john.doe@filmybazarbd.com</p>
+                    <p>Role: Moderator</p>
+                    <button class="action-btn edit" onclick="editProfile()">Edit Profile</button>
+                </div>
+            </div>
+
+            <!-- Recent Activity -->
+            <div class="recent-activity">
+                <h3>Recent Activity</h3>
+                <div class="activity-item">John Doe posted "Action Fury" - 2025-05-06 10:30</div>
+                <div class="activity-item">Jane Smith added user "bob.jones" - 2025-05-05 14:00</div>
+                <div class="activity-item">Admin approved movie "Mystic Legends" - 2025-05-04 09:15</div>
+            </div>
+
+            <!-- Stats Overview -->
+            <div class="stats-filter">
+                <select id="stats-period" onchange="filterStats()">
+                    <option value="all">All Time</option>
+                    <option value="today">Today</option>
+                    <option value="week">This Week</option>
+                    <option value="month">This Month</option>
+                </select>
+            </div>
+            <div class="stats-overview">
+                <div class="stat-card">
+                    <h4>Total Posts</h4>
+                    <p id="total-posts">150</p>
+                </div>
+                <div class="stat-card">
+                    <h4>Total Views</h4>
+                    <p id="total-views">10,500</p>
+                </div>
+                <div class="stat-card">
+                    <h4>Total Downloads</h4>
+                    <p id="total-downloads">4,200</p>
+                </div>
+            </div>
+
+            <!-- Pending Approvals -->
+            <div class="pending-approvals">
+                <h3>Pending Approvals</h3>
+                <table class="pending-table">
+                    <thead>
+                        <tr>
+                            <th>Type</th>
+                            <th>Details</th>
+                            <th>Submitted By</th>
+                            <th>Date</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="pending-table-body">
+                        <tr>
+                            <td>Movie</td>
+                            <td>Space Odyssey (Draft)</td>
+                            <td>Jane Smith</td>
+                            <td>2025-05-05</td>
+                            <td>
+                                <button class="action-btn approve" onclick="approveItem('movie-3')">Approve</button>
+                                <button class="action-btn delete" onclick="rejectItem('movie-3')">Reject</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Search & Filter -->
+            <div class="search-filter">
+                <input type="text" placeholder="Search movies by title..." id="search-input">
+                <select id="status-filter">
+                    <option value="">All Status</option>
+                    <option value="live">Live</option>
+                    <option value="draft">Draft</option>
+                    <option value="hidden">Hidden</option>
+                </select>
+                <select id="tag-filter">
+                    <option value="">All Tags</option>
+                    <option value="featured">Featured</option>
+                    <option value="trending">Trending</option>
+                </select>
+            </div>
+
+            <!-- Movie Management -->
+            <div class="movie-management">
+                <h3>Movie Management</h3>
+                <div class="action-buttons">
+                    <a href="admin-post.html" class="action-btn edit">Add New Movie</a>
+                </div>
+                <table class="movie-table">
+                    <thead>
+                        <tr>
+                            <th>Title</th>
+                            <th>Posted By</th>
+                            <th>Status</th>
+                            <th>Tags</th>
+                            <th>Views</th>
+                            <th>Downloads</th>
+                            <th>Notes</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="movie-table-body">
+                        <tr>
+                            <td>Action Fury</td>
+                            <td>John Doe <span class="badge admin">Admin</span></td>
+                            <td>Live</td>
+                            <td>Featured, Action</td>
+                            <td>1,200</td>
+                            <td>500</td>
+                            <td>Promote on homepage</td>
+                            <td>
+                                <button class="action-btn edit" onclick="editMovie(1)">Edit</button>
+                                <button class="action-btn delete mod-permission" onclick="deleteMovie(1)">Delete</button>
+                                <button class="action-btn" onclick="previewLinks(1)">Preview Links</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Mystic Legends</td>
+                            <td>Jane Smith <span class="badge moderator">Moderator</span></td>
+                            <td>Draft</td>
+                            <td>Trending, Fantasy</td>
+                            <td>800</td>
+                            <td>300</td>
+                            <td>Check link validity</td>
+                            <td>
+                                <button class="action-btn edit" onclick="editMovie(2)">Edit</button>
+                                <button class="action-btn delete mod-permission" onclick="deleteMovie(2)">Delete</button>
+                                <button class="action-btn" onclick="previewLinks(2)">Preview Links</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- User Management -->
+            <div class="user-management">
+                <h3>User Management</h3>
+                <div class="user-form">
+                    <h4>Add New User</h4>
+                    <form id="add-user-form">
+                        <div class="form-group">
+                            <label for="user-name">Name</label>
+                            <input type="text" id="user-name" name="name" placeholder="Enter name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="user-gmail">Gmail</label>
+                            <input type="email" id="user-gmail" name="gmail" placeholder="Enter Gmail" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="user-role">Role</label>
+                            <select id="user-role" name="role" required>
+                                <option value="">Select Role</option>
+                                <option value="moderator">Moderator</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="submit-btn">Add User</button>
+                    </form>
+                </div>
+                <table class="user-table">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Role</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="user-table-body">
+                        <tr>
+                            <td>John Doe</td>
+                            <td>john.doe@filmybazarbd.com</td>
+                            <td>Admin</td>
+                            <td>
+                                <button class="action-btn delete mod-permission" onclick="removeUser('john.doe')">Remove</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Jane Smith</td>
+                            <td>jane.smith@filmybazarbd.com</td>
+                            <td>Moderator</td>
+                            <td>
+                                <button class="action-btn delete mod-permission" onclick="removeUser('jane.smith')">Remove</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="user-id-list">
+                    <h4>All User IDs</h4>
+                    <table class="user-id-table">
+                        <thead>
+                            <tr>
+                                <th>User ID</th>
+                                <th>Email</th>
+                            </tr>
+                        </thead>
+                        <tbody id="user-id-table-body">
+                            <tr>
+                                <td>user_001</td>
+                                <td>john.doe@filmybazarbd.com</td>
+                            </tr>
+                            <tr>
+                                <td>user_002</td>
+                                <td>jane.smith@filmybazarbd.com</td>
+                            </tr>
+                            <tr>
+                                <td>user_003</td>
+                                <td>bob.jones@filmybazarbd.com</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Notifications -->
+            <div class="notifications">
+                <h3>Notifications</h3>
+                <div class="notification-item">
+                    <span>New movie "Action Fury" posted by John Doe</span>
+                    <button onclick="dismissNotification(1)">Dismiss</button>
+                </div>
+                <div class="notification-item">
+                    <span>Link validation failed for "Mystic Legends"</span>
+                    <button onclick="dismissNotification(2)">Dismiss</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer>
+            <p>© 2025 FilmyBazarBD. All rights reserved.</p>
+        </footer>
+    </div>
+
+    <!-- Scripts -->
+    <script>
+        // Theme Toggle
+        const themeToggle = document.getElementById('theme-toggle');
+        themeToggle.addEventListener('change', () => {
+            document.body.classList.toggle('light-theme');
+        });
+
+        // Profile Photo Upload
+        const profilePhotoInput = document.getElementById('profile-photo-upload');
+        const profilePhoto = document.getElementById('profile-photo');
+
+        profilePhotoInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    profilePhoto.src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+                // Call backend API: POST /profile/photo { file }
+            }
+        });
+
+        // Edit Profile
+        function editProfile() {
+            alert('Edit Profile functionality to be implemented.');
+            // Redirect to profile edit page or open a modal
+            // Example: window.location.href = 'edit-profile.html';
+        }
+
+        // Moderator Permissions (Mocked, replace with backend)
+        const modPermissions = {
+            postMovies: true, // Controlled by Admin Dashboard #mod-post-movies
+            deleteUsers: false // Controlled by Admin Dashboard #mod-delete-users
+        };
+
+        // Toggle Delete Buttons based on Permissions
+        document.querySelectorAll('.mod-permission').forEach(btn => {
+            if (btn.classList.contains('delete')) {
+                if (btn.closest('.movie-table') && !modPermissions.postMovies) {
+                    btn.style.display = 'none';
+                }
+                if (btn.closest('.user-table') && !modPermissions.deleteUsers) {
+                    btn.style.display = 'none';
+                }
+            }
+        });
+
+        // Search & Filter (Movies)
+        const searchInput = document.getElementById('search-input');
+        const statusFilter = document.getElementById('status-filter');
+        const tagFilter = document.getElementById('tag-filter');
+
+        function filterMovies() {
+            const search = searchInput.value.toLowerCase();
+            const status = statusFilter.value;
+            const tag = tagFilter.value;
+            const rows = document.querySelectorAll('#movie-table-body tr');
+
+            rows.forEach(row => {
+                const title = row.cells[0].textContent.toLowerCase();
+                const rowStatus = row.cells[2].textContent.toLowerCase();
+                const tags = row.cells[3].textContent.toLowerCase();
+
+                const matchesSearch = title.includes(search);
+                const matchesStatus = !status || rowStatus === status;
+                const matchesTag = !tag || tags.includes(tag);
+
+                row.style.display = matchesSearch && matchesStatus && matchesTag ? '' : 'none';
+            });
+        }
+
+        searchInput.addEventListener('input', filterMovies);
+        statusFilter.addEventListener('change', filterMovies);
+        tagFilter.addEventListener('change', filterMovies);
+
+        // Add User Form
+        const addUserForm = document.getElementById('add-user-form');
+        addUserForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const name = document.getElementById('user-name').value;
+            const gmail = document.getElementById('user-gmail').value;
+            const role = document.getElementById('user-role').value;
+
+            if (name && gmail && role) {
+                alert(`Added user: ${name} (${gmail}, ${role})`);
+                const userTbody = document.getElementById('user-table-body');
+                const userTr = document.createElement('tr');
+                userTr.innerHTML = `
+                    <td>${name}</td>
+                    <td>${gmail}</td>
+                    <td>${role.charAt(0).toUpperCase() + role.slice(1)}</td>
+                    <td><button class="action-btn delete mod-permission" style="display: ${modPermissions.deleteUsers ? 'inline-block' : 'none'}" onclick="removeUser('${gmail}')">Remove</button></td>
+                `;
+                userTbody.appendChild(userTr);
+
+                const idTbody = document.getElementById('user-id-table-body');
+                const idTr = document.createElement('tr');
+                const newId = `user_${(idTbody.children.length + 1).toString().padStart(3, '0')}`;
+                idTr.innerHTML = `
+                    <td>${newId}</td>
+                    <td>${gmail}</td>
+                `;
+                idTbody.appendChild(idTr);
+
+                addUserForm.reset();
+                // Call backend API: POST /users { name, gmail, role }
+            }
+        });
+
+        // Movie Actions
+        function editMovie(id) {
+            window.location.href = `admin-post.html?id=${id}`;
+        }
+
+        function deleteMovie(id) {
+            if (modPermissions.postMovies && confirm(`Are you sure you want to delete movie ID: ${id}?`)) {
+                alert(`Deleted movie with ID: ${id}`);
+                document.querySelector(`#movie-table-body tr:nth-child(${id})`).remove();
+                // Call backend API: DELETE /movies/${id}
+            } else if (!modPermissions.postMovies) {
+                alert('Permission denied: Cannot delete movies.');
+            }
+        }
+
+        function previewLinks(id) {
+            alert(`Previewing links for movie ID: ${id}`);
+            // Open modal or new tab with link preview
+        }
+
+        // User Actions
+        function removeUser(email) {
+            if (modPermissions.deleteUsers && confirm(`Are you sure you want to remove user: ${email}?`)) {
+                alert(`Removed user: ${email}`);
+                document.querySelector(`#user-table-body td:nth-child(2):not(:empty):not(:contains('${email}'))`)?.closest('tr').remove();
+                document.querySelector(`#user-id-table-body td:nth-child(2):not(:empty):not(:contains('${email}'))`)?.closest('tr').remove();
+                // Call backend API: DELETE /users/${email}
+            } else if (!modPermissions.deleteUsers) {
+                alert('Permission denied: Cannot delete users.');
+            }
+        }
+
+        // Stats Filter
+        function filterStats() {
+            const period = document.getElementById('stats-period').value;
+            let posts, views, downloads;
+            switch (period) {
+                case 'today':
+                    posts = 5; views = 300; downloads = 100;
+                    break;
+                case 'week':
+                    posts = 20; views = 1500; downloads = 600;
+                    break;
+                case 'month':
+                    posts = 50; views = 4000; downloads = 1500;
+                    break;
+                default:
+                    posts = 150; views = 10500; downloads = 4200;
+            }
+            document.getElementById('total-posts').textContent = posts;
+            document.getElementById('total-views').textContent = views;
+            document.getElementById('total-downloads').textContent = downloads;
+            // Call backend API: GET /stats?period=${period}
+        }
+
+        // Pending Approvals
+        function approveItem(id) {
+            if (modPermissions.postMovies && confirm(`Approve item ${id}?`)) {
+                alert(`Approved item: ${id}`);
+                document.querySelector(`.action-btn[onclick="approveItem('${id}')"]`).closest('tr').remove();
+                // Call backend API: PATCH /approvals/${id} { status: 'approved' }
+            } else if (!modPermissions.postMovies) {
+                alert('Permission denied: Cannot approve movies.');
+            }
+        }
+
+        function rejectItem(id) {
+            if (modPermissions.postMovies && confirm(`Reject item ${id}?`)) {
+                alert(`Rejected item: ${id}`);
+                document.querySelector(`.action-btn[onclick="rejectItem('${id}')"]`).closest('tr').remove();
+                // Call backend API: DELETE /approvals/${id}
+            } else if (!modPermissions.postMovies) {
+                alert('Permission denied: Cannot reject movies.');
+            }
+        }
+
+        // Notification Action
+        function dismissNotification(id) {
+            alert(`Dismissed notification ID: ${id}`);
+            document.querySelector(`.notification-item button[onclick="dismissNotification(${id})"]`).closest('.notification-item').remove();
+            // Call backend API: DELETE /notifications/${id}
+        }
+    </script>
+</body>
+</html>
