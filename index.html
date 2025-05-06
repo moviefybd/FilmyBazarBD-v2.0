@@ -1,0 +1,848 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FilmyBazarBD - Movie Downloading Homepage</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Roboto', sans-serif;
+        }
+
+        body {
+            background-color: #0f0f0f;
+            color: #ffffff;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        /* Light Theme */
+        body.light-theme {
+            background-color: #f5f5f5;
+            color: #333333;
+        }
+
+        .light-theme header, .light-theme nav, .light-theme .search-bar, .light-theme .tags-section, .light-theme footer {
+            background-color: #ffffff;
+            border-color: #e63946;
+        }
+
+        .light-theme .movie-card {
+            background-color: #ffffff;
+        }
+
+        .light-theme .search-bar input {
+            background-color: #f0f0f0;
+            color: #333333;
+        }
+
+        .light-theme .search-bar input::placeholder {
+            color: #666666;
+        }
+
+        .light-theme .category-badge, .light-theme .admin-btn, .light-theme .profile-btn {
+            background-color: #e63946;
+        }
+
+        .light-theme .movie-card-content p, .light-theme .admin-badge, .light-theme footer p, .light-theme .social-icons a {
+            color: #666666;
+        }
+
+        /* Header */
+        header {
+            background-color: #1c2526;
+            padding: 20px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid #e63946;
+            transition: background-color 0.3s ease;
+        }
+
+        .logo h1 {
+            font-size: 2em;
+            font-weight: 700;
+            color: #e63946;
+        }
+
+        .logo p {
+            font-size: 0.9em;
+            color: #a8a8a8;
+            margin-top: 5px;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .auth-buttons a, .admin-btn, .profile-btn {
+            color: #ffffff;
+            text-decoration: none;
+            padding: 8px 16px;
+            border: 1px solid #e63946;
+            border-radius: 5px;
+            font-size: 0.9em;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .admin-btn {
+            border-color: #2a9d8f;
+        }
+
+        .profile-btn {
+            border-color: #2a9d8f;
+            padding: 8px;
+            font-size: 1.2em;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+        }
+
+        .auth-buttons a:hover, .admin-btn:hover, .profile-btn:hover {
+            background-color: #e63946;
+            color: #ffffff;
+        }
+
+        .admin-btn:hover, .profile-btn:hover {
+            background-color: #2a9d8f;
+        }
+
+        .theme-toggle {
+            display: flex;
+            align-items: center;
+        }
+
+        .theme-toggle input {
+            display: none;
+        }
+
+        .theme-toggle label {
+            cursor: pointer;
+            padding: 8px;
+            font-size: 1.2em;
+            color: #a8a8a8;
+            transition: color 0.3s ease;
+        }
+
+        .theme-toggle input:checked + label {
+            color: #e63946;
+        }
+
+        /* Navigation */
+        nav {
+            background-color: #1c2526;
+            padding: 10px 40px;
+            display: flex;
+            justify-content: center;
+            border-bottom: 1px solid #2a2f30;
+            transition: background-color 0.3s ease;
+        }
+
+        nav a {
+            color: #a8a8a8;
+            text-decoration: none;
+            margin: 0 15px;
+            font-size: 0.9em;
+            font-weight: 400;
+            transition: color 0.3s ease, transform 0.3s ease;
+        }
+
+        nav a:hover {
+            color: #e63946;
+            transform: translateY(-2px);
+        }
+
+        /* Search Bar */
+        .search-bar {
+            background-color: #1c2526;
+            padding: 15px 40px;
+            text-align: center;
+            transition: background-color 0.3s ease;
+        }
+
+        .search-bar input {
+            width: 100%;
+            max-width: 600px;
+            padding: 12px;
+            border: none;
+            border-radius: 25px;
+            background-color: #2a2f30;
+            color: #ffffff;
+            font-size: 1em;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+            transition: box-shadow 0.3s ease, background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .search-bar input:hover, .search-bar input:focus {
+            box-shadow: 0 4px 10px rgba(230, 57, 70, 0.5);
+        }
+
+        .search-bar input::placeholder {
+            color: #a8a8a8;
+        }
+
+        /* Banner Slider */
+        .banner-slider {
+            margin: 20px 40px;
+            height: 300px;
+            overflow: hidden;
+            position: relative;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+        }
+
+        .slides {
+            display: flex;
+            width: 600%;
+            animation: slide 18s infinite;
+        }
+
+        .slide {
+            width: 16.666%;
+            height: 300px;
+            background-size: cover;
+            background-position: center;
+            position: relative;
+            transition: transform 0.5s ease;
+        }
+
+        .slide::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to bottom, rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.7));
+        }
+
+        @keyframes slide {
+            0%, 16.67% { transform: translateX(0); }
+            20%, 36.67% { transform: translateX(-16.667%); }
+            40%, 56.67% { transform: translateX(-33.333%); }
+            60%, 76.67% { transform: translateX(-50%); }
+            80%, 96.67% { transform: translateX(-66.667%); }
+            100% { transform: translateX(-83.333%); }
+        }
+
+        /* Movie Section */
+        .movie-section {
+            padding: 20px 40px;
+        }
+
+        .movie-section h2 {
+            font-size: 1.6em;
+            margin-bottom: 15px;
+            color: #e63946;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .movie-section h2 a {
+            color: #a8a8a8;
+            font-size: 0.7em;
+            font-weight: 300;
+            text-decoration: none;
+            transition: color 0.3s ease, transform 0.3s ease;
+        }
+
+        .movie-section h2 a:hover {
+            color: #e63946;
+            transform: translateX(5px);
+        }
+
+        /* Movie Grid */
+        .movie-grid {
+            display: grid;
+            gap: 20px;
+        }
+
+        .favorites-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        .latest-grid, .hindi-dubbed-grid {
+            grid-template-columns: repeat(3, 1fr);
+        }
+
+        .movie-card {
+            background-color: #1c2526;
+            border-radius: 12px;
+            overflow: hidden;
+            position: relative;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .movie-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(230, 57, 70, 0.3);
+        }
+
+        .movie-card img {
+            width: 100%;
+            height: 280px;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+        .movie-card:hover img {
+            transform: scale(1.05);
+        }
+
+        .movie-card-content {
+            padding: 12px;
+            text-align: center;
+        }
+
+        .movie-card-content h3 {
+            font-size: 1em;
+            font-weight: 400;
+            margin-bottom: 5px;
+        }
+
+        .movie-card-content p {
+            font-size: 0.8em;
+            color: #a8a8a8;
+            margin-bottom: 10px;
+        }
+
+        .category-badge {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background-color: #e63946;
+            color: #ffffff;
+            padding: 5px 10px;
+            font-size: 0.75em;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+        }
+
+        .category-badge.right {
+            left: auto;
+            right: 10px;
+        }
+
+        .rating {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            background: rgba(0, 0, 0, 0.7);
+            color: #ffd700;
+            padding: 4px 8px;
+            font-size: 0.75em;
+            border-radius: 5px;
+        }
+
+        .favorites-card img {
+            height: 350px;
+        }
+
+        .admin-badge {
+            display: inline-block;
+            background-color: #2a2f30;
+            color: #a8a8a8;
+            padding: 3px 8px;
+            font-size: 0.7em;
+            border-radius: 5px;
+            margin-top: 5px;
+        }
+
+        /* Tags Section */
+        .tags-section {
+            padding: 20px 40px;
+            background-color: #1c2526;
+            margin: 20px 0;
+            text-align: center;
+            transition: background-color 0.3s ease;
+        }
+
+        .tags-section h2 {
+            font-size: 1.4em;
+            color: #e63946;
+            margin-bottom: 15px;
+        }
+
+        .tags-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .tag {
+            background-color: #2a2f30;
+            color: #ffffff;
+            padding: 8px 16px;
+            font-size: 0.8em;
+            border-radius: 20px;
+            text-decoration: none;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+        }
+
+        .tag:hover {
+            background-color: #e63946;
+            transform: translateY(-2px);
+        }
+
+        /* Social Media Section */
+        .social-media {
+            padding: 20px 40px;
+            text-align: center;
+            background-color: #0f0f0f;
+            transition: background-color 0.3s ease;
+        }
+
+        .social-media h2 {
+            font-size: 1.4em;
+            color: #e63946;
+            margin-bottom: 15px;
+        }
+
+        .social-icons {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        .social-icons a {
+            color: #a8a8a8;
+            font-size: 1.5em;
+            text-decoration: none;
+            transition: color 0.3s ease, transform 0.3s ease;
+        }
+
+        .social-icons a:hover {
+            color: #e63946;
+            transform: scale(1.2);
+        }
+
+        /* Footer */
+        footer {
+            background-color: #1c2526;
+            text-align: center;
+            padding: 15px;
+            border-top: 1px solid #2a2f30;
+            transition: background-color 0.3s ease;
+        }
+
+        footer p {
+            font-size: 0.8em;
+            color: #a8a8a8;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            header {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .header-right {
+                margin-top: 10px;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .auth-buttons a, .admin-btn, .profile-btn {
+                padding: 6px 12px;
+                font-size: 0.8em;
+            }
+
+            .profile-btn {
+                padding: 6px;
+                width: 34px;
+                height: 34px;
+                font-size: 1em;
+            }
+
+            nav {
+                padding: 10px 20px;
+            }
+
+            nav a {
+                margin: 0 10px;
+                font-size: 0.8em;
+            }
+
+            .search-bar {
+                padding: 10px 20px;
+            }
+
+            .banner-slider {
+                margin: 10px 20px;
+                height: 200px;
+            }
+
+            .slide {
+                height: 200px;
+            }
+
+            .movie-section {
+                padding: 10px 20px;
+            }
+
+            .favorites-grid, .latest-grid, .hindi-dubbed-grid {
+                grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            }
+
+            .movie-card img {
+                height: 200px;
+            }
+
+            .favorites-card img {
+                height: 250px;
+            }
+
+            .tags-section, .social-media {
+                padding: 10px 20px;
+            }
+
+            .social-icons a {
+                font-size: 1.2em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="logo">
+            <h1>FilmyBazarBD</h1>
+            <p>নতুন মুভির হাট, ২৪ ঘণ্টা জমজমাট!</p>
+        </div>
+        <div class="header-right">
+            <div class="auth-buttons">
+                <a href="login.html">Login</a>
+                <a href="signup.html">Sign Up</a>
+                <a href="admin-login.html" class="admin-btn">Admin</a>
+            </div>
+            <div class="theme-toggle">
+                <input type="checkbox" id="theme-toggle">
+                <label for="theme-toggle">🌙</label>
+            </div>
+            <a href="#" class="profile-btn" id="profile-btn">👤</a>
+        </div>
+    </header>
+
+    <!-- Navigation -->
+    <nav>
+        <a href="#home">Home</a>
+        <a href="#request-movie">Request Movie</a>
+        <a href="#social-media">Social Media</a>
+        <a href="#contact">Contact Us</a>
+    </nav>
+
+    <!-- Search Bar -->
+    <section class="search-bar">
+        <input type="text" placeholder="Search for movies...">
+    </section>
+
+    <!-- Banner Slider -->
+    <section class="banner-slider">
+        <div class="slides">
+            <div class="slide" style="background-image: url('https://i.postimg.cc/8cSM91bJ/image-search-1746546841726.jpg');"></div>
+            <div class="slide" style="background-image: url('https://via.placeholder.com/1200x300?text=Sci-Fi+Adventure');"></div>
+            <div class="slide" style="background-image: url('https://via.placeholder.com/1200x300?text=Romantic+Drama');"></div>
+            <div class="slide" style="background-image: url('https://via.placeholder.com/1200x300?text=Fantasy+Quest');"></div>
+            <div class="slide" style="background-image: url('https://via.placeholder.com/1200x300?text=Horror+Thriller');"></div>
+            <div class="slide" style="background-image: url('https://via.placeholder.com/1200x300?text=Comedy+Hit');"></div>
+        </div>
+    </section>
+
+    <!-- Favorites Section -->
+    <section class="movie-section">
+        <h2>Favorites <a href="#">See More</a></h2>
+        <div class="movie-grid favorites-grid">
+            <div class="movie-card favorites-card">
+                <span class="category-badge">Favorites</span>
+                <span class="category-badge right">Featured</span>
+                <img src="https://via.placeholder.com/300x350?text=Action+Fury" alt="Movie Poster">
+                <div class="movie-card-content">
+                    <h3>Action Fury</h3>
+                    <p>Posted: 2025-05-01</p>
+                    <span class="admin-badge">Solutions Architect</span>
+                    <span class="rating">⭐ 8.5</span>
+                </div>
+            </div>
+            <div class="movie-card favorites-card">
+                <span class="category-badge">Favorites</span>
+                <span class="category-badge right">Featured</span>
+                <img src="https://i.postimg.cc/8cSM91bJ/image-search-1746546841726.jpg" alt="Movie Poster">
+                <div class="movie-card-content">
+                    <h3>Mystic Legends</h3>
+                    <p>Posted: 2025-04-28</p>
+                    <span class="admin-badge">Admin</span>
+                    <span class="rating">⭐ 8.2</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Latest Movies Section -->
+    <section class="movie-section">
+        <h2>Latest Movies <a href="#">See More</a></h2>
+        <div class="movie-grid latest-grid">
+            <!-- Row 1 -->
+            <div class="movie-card">
+                <span class="category-badge">Latest</span>
+                <span class="category-badge right">New</span>
+                <img src="https://via.placeholder.com/200x280?text=Tech+Rebellion" alt="Movie Poster">
+                <div class="movie-card-content">
+                    <h3>Tech Rebellion</h3>
+                    <p>Hackers fight a tyrannical AI.</p>
+                    <span class="rating">⭐ 7.9</span>
+                </div>
+            </div>
+            <div class="movie-card">
+                <span class="category-badge">Latest</span>
+                <span class="category-badge right">New</span>
+                <img src="https://via.placeholder.com/200x280?text=Love+in+Time" alt="Movie Poster">
+                <div class="movie-card-content">
+                    <h3>Love in Time</h3>
+                    <p>Love across different eras.</p>
+                    <span class="rating">⭐ 8.0</span>
+                </div>
+            </div>
+            <div class="movie-card">
+                <span class="category-badge">Latest</span>
+                <span class="category-badge right">New</span>
+                <img src="https://via.placeholder.com/200x280?text=Cosmic+Journey" alt="Movie Poster">
+                <div class="movie-card-content">
+                    <h3>Cosmic Journey</h3>
+                    <p>Sci-fi adventure in the stars.</p>
+                    <span class="rating">⭐ 8.3</span>
+                </div>
+            </div>
+            <!-- Row 2 -->
+            <div class="movie-card">
+                <span class="category-badge">Latest</span>
+                <span class="category-badge right">New</span>
+                <img src="https://via.placeholder.com/200x280?text=Dark+Horizon" alt="Movie Poster">
+                <div class="movie-card-content">
+                    <h3>Dark Horizon</h3>
+                    <p>A thriller in a dystopian world.</p>
+                    <span class="rating">⭐ 7.5</span>
+                </div>
+            </div>
+            <div class="movie-card">
+                <span class="category-badge">Latest</span>
+                <span class="category-badge right">New</span>
+                <img src="https://i.postimg.cc/8cSM91bJ/image-search-1746546841726.jpg" alt="Movie Poster">
+                <div class="movie-card-content">
+                    <h3>Star Voyage</h3>
+                    <p>Explorers uncover cosmic secrets.</p>
+                    <span class="rating">⭐ 8.1</span>
+                </div>
+            </div>
+            <div class="movie-card">
+                <span class="category-badge">Latest</span>
+                <span class="category-badge right">New</span>
+                <img src="https://i.postimg.cc/8cSM91bJ/image-search-1746546841726.jpg" alt="Movie Poster">
+                <div class="movie-card-content">
+                    <h3>Eternal Flame</h3>
+                    <p>A romantic epic saga.</p>
+                    <span class="rating">⭐ 7.8</span>
+                </div>
+            </div>
+            <!-- Row 3 -->
+            <div class="movie-card">
+                <span class="category-badge">Latest</span>
+                <span class="category-badge right">New</span>
+                <img src="https://via.placeholder.com/200x280?text=Shadow+Strike" alt="Movie Poster">
+                <div class="movie-card-content">
+                    <h3>Shadow Strike</h3>
+                    <p>An action-packed spy thriller.</p>
+                    <span class="rating">⭐ 7.6</span>
+                </div>
+            </div>
+            <div class="movie-card">
+                <span class="category-badge">Latest</span>
+                <span class="category-badge right">New</span>
+                <img src="https://via.placeholder.com/200x280?text=Lost+Kingdom" alt="Movie Poster">
+                <div class="movie-card-content">
+                    <h3>Lost Kingdom</h3>
+                    <p>A fantasy adventure quest.</p>
+                    <span class="rating">⭐ 8.0</span>
+                </div>
+            </div>
+            <div class="movie-card">
+                <span class="category-badge">Latest</span>
+                <span class="category-badge right">New</span>
+                <img src="https://via.placeholder.com/200x280?text=Night+Fall" alt="Movie Poster">
+                <div class="movie-card-content">
+                    <h3>Night Fall</h3>
+                    <p>A gripping horror mystery.</p>
+                    <span class="rating">⭐ 7.4</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Hindi Dubbed Section -->
+    <section class="movie-section">
+        <h2>Hindi Dubbed <a href="#">See More</a></h2>
+        <div class="movie-grid hindi-dubbed-grid">
+            <!-- Row 1 -->
+            <div class="movie-card">
+                <span class="category-badge">Hindi Dubbed</span>
+                <span class="category-badge right">Dual Audio</span>
+                <img src="https://via.placeholder.com/200x280?text=Sky+Force" alt="Movie Poster">
+                <div class="movie-card-content">
+                    <h3>Sky Force</h3>
+                    <p>A dubbed action blockbuster.</p>
+                    <span class="rating">⭐ 8.2</span>
+                </div>
+            </div>
+            <div class="movie-card">
+                <span class="category-badge">Hindi Dubbed</span>
+                <span class="category-badge right">Dual Audio</span>
+                <img src="https://via.placeholder.com/200x280?text=Iron+Legacy" alt="Movie Poster">
+                <div class="movie-card-content">
+                    <h3>Iron Legacy</h3>
+                    <p>Superhero saga in Hindi.</p>
+                    <span class="rating">⭐ 7.9</span>
+                </div>
+            </div>
+            <div class="movie-card">
+                <span class="category-badge">Hindi Dubbed</span>
+                <span class="category-badge right">Dual Audio</span>
+                <img src="https://via.placeholder.com/200x280?text=Speed+Rush" alt="Movie Poster">
+                <div class="movie-card-content">
+                    <h3>Speed Rush</h3>
+                    <p>High-speed chase thriller.</p>
+                    <span class="rating">⭐ 7.7</span>
+                </div>
+            </div>
+            <!-- Row 2 -->
+            <div class="movie-card">
+                <span class="category-badge">Hindi Dubbed</span>
+                <span class="category-badge right">Dual Audio</span>
+                <img src="https://via.placeholder.com/200x280?text=Ghost+Realm" alt="Movie Poster">
+                <div class="movie-card-content">
+                    <h3>Ghost Realm</h3>
+                    <p>Horror dubbed in Hindi.</p>
+                    <span class="rating">⭐ 7.5</span>
+                </div>
+            </div>
+            <div class="movie-card">
+                <span class="category-badge">Hindi Dubbed</span>
+                <span class="category-badge right">Dual Audio</span>
+                <img src="https://via.placeholder.com/200x280?text=War+Zone" alt="Movie Poster">
+                <div class="movie-card-content">
+                    <h3>War Zone</h3>
+                    <p>Action-packed war drama.</p>
+                    <span class="rating">⭐ 8.0</span>
+                </div>
+            </div>
+            <div class="movie-card">
+                <span class="category-badge">Hindi Dubbed</span>
+                <span class="category-badge right">Dual Audio</span>
+                <img src="https://via.placeholder.com/200x280?text=Time+Loop" alt="Movie Poster">
+                <div class="movie-card-content">
+                    <h3>Time Loop</h3>
+                    <p>Sci-fi thriller in Hindi.</p>
+                    <span class="rating">⭐ 7.8</span>
+                </div>
+            </div>
+            <!-- Row 3 -->
+            <div class="movie-card">
+                <span class="category-badge">Hindi Dubbed</span>
+                <span class="category-badge right">Dual Audio</span>
+                <img src="https://via.placeholder.com/200x280?text=Fire+Storm" alt="Movie Poster">
+                <div class="movie-card-content">
+                    <h3>Fire Storm</h3>
+                    <p>Action adventure dubbed.</p>
+                    <span class="rating">⭐ 7.6</span>
+                </div>
+            </div>
+            <div class="movie-card">
+                <span class="category-badge">Hindi Dubbed</span>
+                <span class="category-badge right">Dual Audio</span>
+                <img src="https://i.postimg.cc/8cSM91bJ/image-search-1746546841726.jpg" alt="Movie Poster">
+                <div class="movie-card-content">
+                    <h3>Ice Age</h3>
+                    <p>Animated fun in Hindi.</p>
+                    <span class="rating">⭐ 8.1</span>
+                </div>
+            </div>
+            <div class="movie-card">
+                <span class="category-badge">Hindi Dubbed</span>
+                <span class="category-badge right">Dual Audio</span>
+                <img src="https://via.placeholder.com/200x280?text=Sky+Fall" alt="Movie Poster">
+                <div class="movie-card-content">
+                    <h3>Sky Fall</h3>
+                    <p>Action thriller in Hindi.</p>
+                    <span class="rating">⭐ 7.9</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Tags Section -->
+    <section class="tags-section">
+        <h2>Explore by Tags</h2>
+        <div class="tags-container">
+            <a href="#" class="tag">Action</a>
+            <a href="#" class="tag">Sci-Fi</a>
+            <a href="#" class="tag">Romance</a>
+            <a href="#" class="tag">Thriller</a>
+            <a href="#" class="tag">Fantasy</a>
+            <a href="#" class="tag">Horror</a>
+            <a href="#" class="tag">Comedy</a>
+            <a href="#" class="tag">Adventure</a>
+            <a href="#" class="tag">Drama</a>
+            <a href="#" class="tag">Animation</a>
+        </div>
+    </section>
+
+    <!-- Social Media Section -->
+    <section class="social-media">
+        <h2>Connect with Us</h2>
+        <div class="social-icons">
+            <a href="#" title="Facebook" class="social-icon">f</a>
+            <a href="#" title="Instagram" class="social-icon">📷</a>
+            <a href="#" title="X" class="social-icon">𝕏</a>
+            <a href="#" title="Telegram" class="social-icon">✈</a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <p>© 2025 FilmyBazarBD. All rights reserved.</p>
+    </footer>
+
+    <!-- Scripts -->
+    <script>
+        // Theme Toggle
+        const themeToggle = document.getElementById('theme-toggle');
+        themeToggle.addEventListener('change', () => {
+            document.body.classList.toggle('light-theme');
+        });
+
+        // Mock authentication status (replace with real backend check)
+        const isAuthenticated = true; // Set to false to test unauthenticated behavior
+
+        // Profile Button Handler
+        const profileBtn = document.getElementById('profile-btn');
+        profileBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            if (isAuthenticated) {
+                window.location.href = 'moderator-dashboard.html';
+            } else {
+                alert('Please log in to access your dashboard.');
+                window.location.href = 'login.html';
+            }
+        });
+    </script>
+</body>
+</html>
